@@ -1,6 +1,8 @@
 # D3.js & Google Analytics
 
-Examples to go along with a presentation on the introduction to D3.js and using it to graph Google Analytic data.
+Examples to go along with a presentation on the introduction to D3.js and using it to graph Google Analytic data. The slides can be found on [speakerdeck][1].
+
+[1]: https://speakerdeck.com/edds/using-d3-dot-js-to-visualise-your-analytics-data
 
 ## Usage
 
