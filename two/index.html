@@ -1,0 +1,48 @@
+<!doctype html>
+
+<title>two</title>
+<style>
+  svg {
+    width: 600px;
+    height: 300px;
+    border: 2px solid red;
+  }
+  path {
+    fill: none;
+    stroke-width: 2px;
+    stroke: green;
+  }
+</style>
+
+<svg id="graph"></svg>
+
+<script src="../vendor/d3.v3.min.js"></script>
+<script>
+  var data = [
+    [0, 0.25, 0.5, 0.75, 1, 0.75, 0.5, 0.25, 0, 0.25, 0.5, 0.75, 1, 0.75, 0.5, 0.25, 0],
+    [1, 0.75, 0.5, 0.25, 0, 0.25, 0.5, 0.75, 1, 0.75, 0.5, 0.25, 0, 0.25, 0.5, 0.75, 1]
+  ]
+
+  var line = d3.svg.line()
+    .x(function(d, i) { return xScale(i); })
+    .y(function(d, i) { return yScale(d); });
+
+  var xScale = d3.scale.linear().domain([0, data[0].length-1]).range([0, 540]);
+  var yScale = d3.scale.linear().domain([0, 1]).range([240, 0]);
+
+  var graph = d3.select('#graph')
+    .append('g')
+      .attr('transform', 'translate(20,20)');
+
+  lines = graph.selectAll('path').data(data);
+
+  // add new elements not matched by previous data
+  lines.enter().append('path');
+
+  // update all the elements
+  lines.attr('d', function(d){ return line(d); });
+
+  // remove all the unmatched elements
+  lines.exit().remove();
+
+</script>

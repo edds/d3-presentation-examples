@@ -1,0 +1,66 @@
+<!doctype html>
+
+<title>four</title>
+<style>
+  svg {
+    width: 600px;
+    height: 300px;
+    border: 2px solid red;
+  }
+  path {
+    fill: none;
+    stroke-width: 2px;
+    stroke: green;
+  }
+</style>
+
+<svg id="graph"></svg>
+
+<script src="../vendor/jquery.min.js"></script>
+<script src="../vendor/d3.v3.min.js"></script>
+<script src="../vendor/user.js"></script>
+<script>
+  var googleClientID = '486976311314.apps.googleusercontent.com';
+  var profileId = 'ga:53872948';
+  var endpoint = "https://www.googleapis.com/analytics/v3/data/ga?"
+               + "ids=" + profileId +"&"
+               + "dimensions=ga:nthDay,ga:deviceCategory&"
+               + "metrics=ga:visitors&"
+               + "start-date=2013-01-01&"
+               + "end-date=2013-09-30&"
+               + "max-results=10000&"
+               + "sort=ga:nthDay";
+  var days = 272;
+
+  googleUser.apiRequest(endpoint, function(ajaxData){
+    var data = [ 
+          { type: "desktop", data: new Array(days+1).join('0').split('').map(parseFloat) },
+          { type: "mobile",  data: new Array(days+1).join('0').split('').map(parseFloat) },
+          { type: "tablet",  data: new Array(days+1).join('0').split('').map(parseFloat) }
+        ],
+        dataIndex = { desktop: 0, mobile: 1, tablet: 2 };
+ 
+    var i, _i, count, maxCount = 0;
+    for(i=0,_i=ajaxData.rows.length;i<_i;i++){
+      count = parseInt(ajaxData.rows[i][2], 10);
+      data[dataIndex[ajaxData.rows[i][1]]].data[parseInt(ajaxData.rows[i][0], 10)] = count;
+      if(count>maxCount){ maxCount = count; }
+    }
+    
+    var line = d3.svg.line()
+      .x(function(d, i) { return xScale(i); })
+      .y(function(d, i) { return yScale(d); });
+
+    var xScale = d3.scale.linear().domain([0, days-1]).range([0, 600]);
+    var yScale = d3.scale.linear().domain([0, maxCount]).range([300, 0]);
+
+    var graph = d3.select('#graph');
+
+    lines = graph.selectAll('path').data(data);
+
+    lines.enter().append('path');
+
+    lines.attr('d', function(d){ return line(d.data); });
+  });
+
+</script>
